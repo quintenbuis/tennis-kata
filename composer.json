@@ -2,6 +2,7 @@
   "name": "quintenbuis/tennis",
   "description": "Tennis kata from https://codingdojo.org/kata/Tennis/",
   "minimum-stability": "stable",
+  "license": "MIT",
   "authors": [
     {
       "name": "quinten",
