@@ -16,33 +16,15 @@ final class Scoreboard
 
     public function standings(): string
     {
-        if ($this->player1->hasWonGame()) {
-            return 'Player 1 has won the game!';
-        }
-
-        if ($this->player2->hasWonGame()) {
-            return 'Player 2 has won the game!';
-        }
-
-        if ($this->player1->score()->is(Scoring::Advantage)) {
-            return 'Advantage Player 1';
-        }
-
-        if ($this->player2->score()->is(Scoring::Advantage)) {
-            return 'Advantage Player 2';
-        }
-
-        if ($this->isDeuce()) {
-            return 'Deuce';
-        }
-
-        if ($this->sameScoring()) {
-            return sprintf('%s All', $this->player1->score()->name);
-        }
-
-        return $this->sameScoring()
-            ? sprintf('%s All', $this->player1->score()->name)
-            : sprintf('%s %s', $this->player1->score()->name, $this->player2->score()->name);
+        return match (true) {
+            $this->player1->hasWonGame() => 'Player 1 has won the game!',
+            $this->player2->hasWonGame() => 'Player 2 has won the game!',
+            $this->player1->score()->is(Scoring::Advantage) => 'Advantage Player 1',
+            $this->player2->score()->is(Scoring::Advantage) => 'Advantage Player 2',
+            $this->isDeuce() => 'Deuce',
+            $this->sameScoring() => sprintf('%s All', $this->player1->score()->name),
+            default => sprintf('%s %s', $this->player1->score()->name, $this->player2->score()->name),
+        };
     }
 
     public function isDeuce(): bool
