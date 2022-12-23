@@ -9,8 +9,8 @@ final class Game
     private bool $isWon = false;
 
     public function __construct(
-        private readonly Player $player1,
-        private readonly Player $player2,
+        public readonly Player $player1,
+        public readonly Player $player2,
     ) {
     }
 
@@ -28,20 +28,11 @@ final class Game
 
     private function processScore(Player $player): void
     {
-        // @todo refactor to different strategy classes
-        $advantageHandler = function () use ($player) {
-            $player->score()->is(Scoring::Advantage)
-                ? $player->awardWin()
-                : $player->setScore($player->score()->next());
-
-            $this->player1 === $player
-                ? $this->player2->setScore(Scoring::Forty)
-                : $this->player1->setScore(Scoring::Forty);
-        };
+        $ruleContext = new RuleContext(game: $this, player: $player);
 
         match(true) {
             $this->scoreboard()->isDeuce() => $player->setScore(Scoring::Advantage),
-            $this->scoreboard()->isAdvantage() => $advantageHandler(),
+            $this->scoreboard()->isAdvantage() => (new AdvantageRule($ruleContext))->handle(),
             $player->score()->is(Scoring::Forty) => $player->awardWin(),
             default => $player->setScore($player->score()->next())
         };
